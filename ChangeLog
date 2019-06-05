@@ -1,4 +1,8 @@
 ------------------------------------------------------------------------------
+Version 8.16.1 [v8-stable] 2019-06-05
+- omsqlite: Created SQLite module.
+  Not tested yet.
+------------------------------------------------------------------------------
 Version 8.16.0 [v8-stable] 2016-01-26
 - rsgtutil: Added extraction support including loglines and hash chains. 
   More details on how to extract loglines can be found in the rsgtutil

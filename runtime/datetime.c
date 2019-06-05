@@ -841,6 +841,35 @@ int formatTimestampToPgSQL(struct syslogTime *ts, char *pBuf)
 	return 19;
 }
 
+int formatTimestampToSQLite(struct syslogTime *ts, char *pBuf)
+{
+	/* see note in formatTimestampToMySQL, applies here as well */
+	assert(ts != NULL);
+	assert(pBuf != NULL);
+
+	pBuf[0] = (ts->year / 1000) % 10 + '0';
+	pBuf[1] = (ts->year / 100) % 10 + '0';
+	pBuf[2] = (ts->year / 10) % 10 + '0';
+	pBuf[3] = ts->year % 10 + '0';
+	pBuf[4] = '-';
+	pBuf[5] = (ts->month / 10) % 10 + '0';
+	pBuf[6] = ts->month % 10 + '0';
+	pBuf[7] = '-';
+	pBuf[8] = (ts->day / 10) % 10 + '0';
+	pBuf[9] = ts->day % 10 + '0';
+	pBuf[10] = ' ';
+	pBuf[11] = (ts->hour / 10) % 10 + '0';
+	pBuf[12] = ts->hour % 10 + '0';
+	pBuf[13] = ':';
+	pBuf[14] = (ts->minute / 10) % 10 + '0';
+	pBuf[15] = ts->minute % 10 + '0';
+	pBuf[16] = ':';
+	pBuf[17] = (ts->second / 10) % 10 + '0';
+	pBuf[18] = ts->second % 10 + '0';
+	pBuf[19] = '\0';
+	return 19;
+}
+
 
 /**
  * Format a syslogTimestamp to just the fractional seconds.
@@ -1207,6 +1236,7 @@ CODESTARTobjQueryInterface(datetime)
 	pIf->ParseTIMESTAMP3164 = ParseTIMESTAMP3164;
 	pIf->formatTimestampToMySQL = formatTimestampToMySQL;
 	pIf->formatTimestampToPgSQL = formatTimestampToPgSQL;
+	pIf->formatTimestampToSQLite = formatTimestampToSQLite;
 	pIf->formatTimestampSecFrac = formatTimestampSecFrac;
 	pIf->formatTimestamp3339 = formatTimestamp3339;
 	pIf->formatTimestamp3164 = formatTimestamp3164;

@@ -637,6 +637,40 @@ AM_CONDITIONAL(ENABLE_PGSQL, test x$enable_pgsql = xyes)
 AC_SUBST(PGSQL_CFLAGS)
 AC_SUBST(PGSQL_LIBS)
 
+# SQLite3 support
+AC_ARG_ENABLE(sqlite,
+        [AS_HELP_STRING([--enable-sqlite],[Enable SQLite3 database support @<:@default=no@:>@])],
+        [case "${enableval}" in
+         yes) enable_sqlite="yes" ;;
+          no) enable_sqlite="no" ;;
+           *) AC_MSG_ERROR(bad value ${enableval} for --enable-sqlite) ;;
+         esac],
+        [enable_sqlite=no]
+)
+if test "x$enable_sqlite" = "xyes"; then
+  AC_CHECK_PROG(
+    [SQLITE_CONFIG],
+    [sqlite3],
+    [sqlite3],
+    [no],,,
+  )
+  if test "x${SQLITE_CONFIG}" = "xno"; then
+    AC_MSG_FAILURE([sqlite3 not found])
+  fi
+  AC_CHECK_LIB(
+    [sqlite3],
+    [sqlite3_open],
+    [SQLITE_CFLAGS="-I$SQLITE_CONFIG/include"
+     SQLITE_LIBS="-L$SQLITE_CONFIG/lib -lsqlite3"
+    ],
+    [AC_MSG_FAILURE([SQLite3 library is missing])],
+    [-L$SQLITE_CONFIG/lib]
+  )
+fi
+AM_CONDITIONAL(ENABLE_SQLITE, test x$enable_sqlite = xyes)
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
+
 # libdbi support
 AC_ARG_ENABLE(libdbi,
         [AS_HELP_STRING([--enable-libdbi],[Enable libdbi database support @<:@default=no@:>@])],
@@ -1731,6 +1765,7 @@ AC_CONFIG_FILES([Makefile \
 		plugins/omgssapi/Makefile \
 		plugins/ommysql/Makefile \
 		plugins/ompgsql/Makefile \
+		plugins/omsqlite/Makefile \
 		plugins/omrelp/Makefile \
 		plugins/omlibdbi/Makefile \
 		plugins/ommail/Makefile \

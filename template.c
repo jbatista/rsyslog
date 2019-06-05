@@ -705,8 +705,10 @@ static void doOptions(unsigned char **pp, struct templateEntry *pTpe)
 		 */
 		 if(!strcmp((char*)Buf, "date-mysql")) {
 			pTpe->data.field.eDateFormat = tplFmtMySQLDate;
-                 } else if(!strcmp((char*)Buf, "date-pgsql")) {
-                        pTpe->data.field.eDateFormat = tplFmtPgSQLDate;
+         } else if(!strcmp((char*)Buf, "date-pgsql")) {
+            pTpe->data.field.eDateFormat = tplFmtPgSQLDate;
+         } else if(!strcmp((char*)Buf, "date-sqlite")) {
+            pTpe->data.field.eDateFormat = tplFmtSQLiteDate;
 		 } else if(!strcmp((char*)Buf, "date-rfc3164")) {
 			pTpe->data.field.eDateFormat = tplFmtRFC3164Date;
 		 } else if(!strcmp((char*)Buf, "date-rfc3164-buggyday")) {
@@ -1582,6 +1584,8 @@ createPropertyTpe(struct template *pTpl, struct cnfobj *o)
 				datefmt = tplFmtMySQLDate;
 			} else if(!es_strbufcmp(pvals[i].val.d.estr, (uchar*)"pgsql", sizeof("pgsql")-1)) {
 				datefmt = tplFmtPgSQLDate;
+			} else if(!es_strbufcmp(pvals[i].val.d.estr, (uchar*)"sqlite", sizeof("sqlite")-1)) {
+				datefmt = tplFmtSQLiteDate;
 			} else if(!es_strbufcmp(pvals[i].val.d.estr, (uchar*)"rfc3164", sizeof("rfc3164")-1)) {
 				datefmt = tplFmtRFC3164Date;
 			} else if(!es_strbufcmp(pvals[i].val.d.estr, (uchar*)"rfc3164-buggyday", sizeof("rfc3164-buggyday")-1)) {
@@ -2204,6 +2208,9 @@ void tplPrintList(rsconf_t *conf)
                                 case tplFmtPgSQLDate:
                                         dbgprintf("[Format as PgSQL-Date] ");
                                         break;
+                case tplFmtSQLiteDate:
+                        dbgprintf("[Format as SQLite-Date] ");
+                        break;
 				case tplFmtRFC3164Date:
 					dbgprintf("[Format as RFC3164-Date] ");
 					break;

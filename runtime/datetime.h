@@ -37,6 +37,7 @@ BEGINinterface(datetime) /* name must also be changed in ENDinterface macro! */
 	rsRetVal (*ParseTIMESTAMP3164)(struct syslogTime *pTime, uchar** pszTS, int*, const int bParseTZ, const int bDetectYearAfterTime);
 	int (*formatTimestampToMySQL)(struct syslogTime *ts, char* pDst);
 	int (*formatTimestampToPgSQL)(struct syslogTime *ts, char *pDst);
+	int (*formatTimestampToSQLite)(struct syslogTime *ts, char *pDst);
 	int (*formatTimestamp3339)(struct syslogTime *ts, char* pBuf);
 	int (*formatTimestamp3164)(struct syslogTime *ts, char* pBuf, int);
 	int (*formatTimestampSecFrac)(struct syslogTime *ts, char* pBuf);

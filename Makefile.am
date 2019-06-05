@@ -79,6 +79,10 @@ if ENABLE_PGSQL
 SUBDIRS += plugins/ompgsql
 endif
 
+if ENABLE_SQLITE
+SUBDIRS += plugins/omsqlite
+endif
+
 if ENABLE_SNMP
 SUBDIRS += plugins/omsnmp
 endif

@@ -806,10 +806,12 @@ static inline rsRetVal msgBaseConstruct(msg_t **ppThis)
 	pM->pszRcvdAt3339 = NULL;
 	pM->pszRcvdAt_MySQL = NULL;
         pM->pszRcvdAt_PgSQL = NULL;
+    pM->pszRcvdAt_SQLite = NULL;
 	pM->pszTIMESTAMP3164 = NULL;
 	pM->pszTIMESTAMP3339 = NULL;
 	pM->pszTIMESTAMP_MySQL = NULL;
         pM->pszTIMESTAMP_PgSQL = NULL;
+    pM->pszTIMESTAMP_SQLite = NULL;
 	pM->pszStrucData = NULL;
 	pM->pCSAPPNAME = NULL;
 	pM->pCSPROCID = NULL;
@@ -954,8 +956,10 @@ CODESTARTobjDestruct(msg)
 		free(pThis->pszRcvdAt3339);
 		free(pThis->pszRcvdAt_MySQL);
 		free(pThis->pszRcvdAt_PgSQL);
+		free(pThis->pszRcvdAt_SQLite);
 		free(pThis->pszTIMESTAMP_MySQL);
 		free(pThis->pszTIMESTAMP_PgSQL);
+		free(pThis->pszTIMESTAMP_SQLite);
 		free(pThis->pszStrucData);
 		if(pThis->iLenPROGNAME >= CONF_PROGNAME_BUFSIZE)
 			free(pThis->PROGNAME.ptr);
@@ -1735,6 +1739,17 @@ getTimeReported(msg_t * const pM, enum tplFormatTypes eFmt)
                 }
                 MsgUnlock(pM);
                 return(pM->pszTIMESTAMP_PgSQL);
+    case tplFmtSQLiteDate:
+            MsgLock(pM);
+            if(pM->pszTIMESTAMP_SQLite == NULL) {
+                    if((pM->pszTIMESTAMP_SQLite = MALLOC(21)) == NULL) {
+                            MsgUnlock(pM);
+                            return "";
+                    }
+                    datetime.formatTimestampToSQLite(&pM->tTIMESTAMP, pM->pszTIMESTAMP_SQLite);
+            }
+            MsgUnlock(pM);
+            return(pM->pszTIMESTAMP_SQLite);
 	case tplFmtRFC3339Date:
 		MsgLock(pM);
 		if(pM->pszTIMESTAMP3339 == NULL) {
@@ -1834,6 +1849,17 @@ static char *getTimeGenerated(msg_t * const pM, enum tplFormatTypes eFmt)
                 }
                 MsgUnlock(pM);
                 return(pM->pszRcvdAt_PgSQL);
+    case tplFmtSQLiteDate:
+            MsgLock(pM);
+            if(pM->pszRcvdAt_SQLite == NULL) {
+                    if((pM->pszRcvdAt_SQLite = MALLOC(21)) == NULL) {
+                            MsgUnlock(pM);
+                            return "";
+                    }
+                    datetime.formatTimestampToSQLite(&pM->tRcvdAt, pM->pszRcvdAt_SQLite);
+            }
+            MsgUnlock(pM);
+            return(pM->pszRcvdAt_SQLite);
 	case tplFmtRFC3164Date:
 	case tplFmtRFC3164BuggyDate:
 		MsgLock(pM);
