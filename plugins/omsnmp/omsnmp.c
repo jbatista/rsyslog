@@ -100,7 +100,6 @@ typedef struct configSettings_s {
 	uchar* pszEnterpriseOID;
 	uchar* pszSnmpTrapOID;
 	uchar* pszSyslogMessageOID;
-	uchar* pszSnmpV1dynSource;	/* If PDU source property needs to be overwritten, only valid for SNMPv1*/
 
 	int iSpecificType;
 	int iTrapType;		/*Default is SNMP_TRAP_ENTERPRISESPECIFIC */
@@ -149,7 +148,6 @@ CODESTARTinitConfVars
 	cs.pszEnterpriseOID = NULL;
 	cs.pszSnmpTrapOID = NULL;
 	cs.pszSyslogMessageOID = NULL;
-	cs.pszSnmpV1dynSource = NULL;
 	cs.iSpecificType = 0;
 	cs.iTrapType = SNMP_TRAP_ENTERPRISESPECIFIC;
 ENDinitConfVars
@@ -384,6 +382,9 @@ static rsRetVal omsnmp_sendsnmp(wrkrInstanceData_t *pWrkrData, uchar *psz, uchar
 		omsnmp_exitSession(pWrkrData);
 
 		ABORT_FINALIZE(RS_RET_SUSPENDED);
+	} else {
+		dbgprintf( "omsnmp_sendsnmp: Successfully send SNMP Trap to %s:%d\n",
+			pData->szTarget, pData->iPort);
 	}
 
 finalize_it:
@@ -534,8 +535,6 @@ CODE_STD_STRING_REQUESTparseSelectorAct(1)
 	pData->szSnmpTrapOID = (uchar*) ((cs.pszSnmpTrapOID == NULL) ? NULL : strdup((char*)cs.pszSnmpTrapOID));
 	pData->szSyslogMessageOID = (uchar*) ((cs.pszSyslogMessageOID == NULL) ? NULL :
 		strdup((char*)cs.pszSyslogMessageOID));
-	pData->szSnmpV1Source = (uchar*) ((cs.pszSnmpV1dynSource == NULL) ? NULL :
-		strdup((char*)cs.pszSnmpV1dynSource));
 	pData->iPort = cs.iPort;
 	pData->iSpecificType = cs.iSpecificType;
 
@@ -592,8 +591,6 @@ static rsRetVal resetConfigVariables(uchar __attribute__((unused)) *pp, void __a
 	cs.pszSnmpTrapOID = NULL;
 	free(cs.pszSyslogMessageOID);
 	cs.pszSyslogMessageOID = NULL;
-	free(cs.pszSnmpV1dynSource);
-	cs.pszSnmpV1dynSource = NULL;
 	cs.iPort = 0;
 	cs.iSNMPVersion = 1;
 	cs.iSpecificType = 0;
@@ -609,7 +606,6 @@ CODESTARTmodExit
 	free(cs.pszEnterpriseOID);
 	free(cs.pszSnmpTrapOID);
 	free(cs.pszSyslogMessageOID);
-	free(cs.pszSnmpV1dynSource);
 
 	/* release what we no longer need */
 ENDmodExit
@@ -647,8 +643,6 @@ CODEmodInit_QueryRegCFSLineHdlr
 	STD_LOADABLE_MODULE_ID));
 	CHKiRet(omsdRegCFSLineHdlr((uchar *)"actionsnmpsyslogmessageoid", 0, eCmdHdlrGetWord, NULL,
 	&cs.pszSyslogMessageOID, STD_LOADABLE_MODULE_ID));
-	CHKiRet(omsdRegCFSLineHdlr((uchar *)"actionsnmpv1dynsource", 0, eCmdHdlrGetWord, NULL,
-	&cs.pszSnmpV1dynSource, STD_LOADABLE_MODULE_ID));
 	CHKiRet(omsdRegCFSLineHdlr((uchar *)"actionsnmpspecifictype", 0, eCmdHdlrInt, NULL, &cs.iSpecificType,
 	STD_LOADABLE_MODULE_ID));
 	CHKiRet(omsdRegCFSLineHdlr((uchar *)"actionsnmptraptype", 0, eCmdHdlrInt, NULL, &cs.iTrapType,
