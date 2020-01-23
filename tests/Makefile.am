@@ -186,6 +186,7 @@ TESTS +=  \
 	glbl_setenv_err.sh \
 	glbl_setenv_err_too_long.sh \
 	glbl_setenv.sh \
+	mmexternal-SegFault.sh \
 	nested-call-shutdown.sh \
 	dnscache-TTL-0.sh \
 	invalid_nested_include.sh \
@@ -474,7 +475,6 @@ TESTS +=  \
 	rscript_backticks_empty_envvar-vg.sh \
 	rscript-config_enable-off-vg.sh \
 	prop-jsonmesg-vg.sh \
-	mmexternal-SegFault-vg.sh \
 	mmexternal-InvldProg-vg.sh \
 	internal-errmsg-memleak-vg.sh \
 	glbl-oversizeMsg-log-vg.sh \
@@ -1560,7 +1560,7 @@ EXTRA_DIST= \
 	imbatchreport_delete_toolarge.sh \
 	imbatchreport_rename_toolarge.sh \
 	imbatchreport_errmsg_no_params-vg.sh \
-	mmexternal-SegFault-vg.sh \
+	mmexternal-SegFault.sh \
 	mmexternal-SegFault-empty-jroot-vg.sh \
 	testsuites/mmexternal-SegFault-mm-python.py \
 	mmexternal-InvldProg-vg.sh \
